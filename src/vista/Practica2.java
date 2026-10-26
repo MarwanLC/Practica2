@@ -1,17 +1,38 @@
-package practica2;
+package vista;
 
+import modelo.Cliente;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 public class Practica2 extends JFrame
 {
-
+    ArrayList <Cliente> listaClientes = new ArrayList<>(3); 
+    
+    private int posicionActual = 0;
+    private void mostrarCliente(){
+        
+        Cliente clientes = listaClientes.get(posicionActual);
+        
+        numeroField.setText(String.valueOf(clientes.getNumero()));
+        nombreField.setText((clientes.getNombre()));
+        edadField.setText(String.valueOf(clientes.getEdad()));
+        puntosField.setText(String.valueOf(clientes.getPuntos()));
+        
+    }
+    
+    private void actualizarBotones(){
+        atrasButton.setEnabled(posicionActual > 0);
+        adelanteButton.setEnabled(posicionActual < listaClientes.size() -1);
+    }
+    
     //Etiquetas para identificar los campos de texto
     private JLabel numeroLabel;
     private JLabel nombreLabel;
     private JLabel edadLabel;
+    private JLabel puntosLabel;
 
 //    //Cadenas para las etiquetas
 //    private static String numeroString = "Número: ";
@@ -21,12 +42,17 @@ public class Practica2 extends JFrame
     private JTextField numeroField;
     private JTextField nombreField;
     private JTextField edadField;
+    private JTextField puntosField;
     
     private JButton atrasButton;
     private JButton adelanteButton;
 
     public Practica2() {
         super("Datos");
+        
+        listaClientes.add(new Cliente(10, "Pepe", 24, 40.5));
+        listaClientes.add(new Cliente(11, "Paco", 23, 4.5));
+        listaClientes.add(new Cliente(12, "Pedro", 50, 2.14));
 
         //Lo que pasa si cerramos la ventana (sustituye al WindowListener
         //con windowClosing y System.exit(0) de la versión anterior).
@@ -36,6 +62,7 @@ public class Practica2 extends JFrame
         numeroLabel = new JLabel("Numero");
         nombreLabel = new JLabel("Nombre");
         edadLabel = new JLabel("Edad");
+        puntosLabel = new JLabel("Puntos");
 
         //Campo donde vamos a introducir el número
         numeroField = new JTextField(10);
@@ -50,10 +77,19 @@ public class Practica2 extends JFrame
         edadField.setEditable(false);
         edadField.setForeground(Color.blue);
         
+        puntosField = new JTextField(10);
+        puntosField.setEditable(false);
+        puntosField.setForeground(Color.green);
+        
         atrasButton = new JButton("Atras");
         atrasButton.addActionListener(new ActionListener() {  // Evento de boton.
             public void actionPerformed(ActionEvent e) {
                 System.out.println("atras");
+                if(posicionActual > 0){
+                    posicionActual--;
+                    mostrarCliente();
+                    actualizarBotones();
+                }
             }
         });
         
@@ -61,6 +97,12 @@ public class Practica2 extends JFrame
         adelanteButton.addActionListener(new ActionListener() {  // Evento de boton.
             public void actionPerformed(ActionEvent e) {
                 System.out.println("siguiente");
+                if(posicionActual < listaClientes.size()-1){
+                    posicionActual++;
+                    mostrarCliente();
+                    actualizarBotones();
+                }
+                    
             }
         });
 
@@ -70,6 +112,7 @@ public class Practica2 extends JFrame
         labelPane.add(numeroLabel);
         labelPane.add(nombreLabel);
         labelPane.add(edadLabel);
+        labelPane.add(puntosLabel);
 
         //Dispone los campos de texto en otro panel
         JPanel fieldPane = new JPanel();
@@ -77,6 +120,7 @@ public class Practica2 extends JFrame
         fieldPane.add(numeroField);
         fieldPane.add(nombreField);
         fieldPane.add(edadField);
+        fieldPane.add(puntosField);
         
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new GridLayout(1, 0));
@@ -93,10 +137,10 @@ public class Practica2 extends JFrame
         contentPane.add(labelPane, BorderLayout.CENTER);
         contentPane.add(fieldPane, BorderLayout.EAST);
         contentPane.add(buttonPane, BorderLayout.SOUTH);
-
         setContentPane(contentPane);  //this.setContentPane(contentPane);
           // es set, o sea, machado el contenedor del objeto "Doble", hijo de JFrame
-
+        mostrarCliente();
+        actualizarBotones();
     }
 
     public static void main(String[] args) {
